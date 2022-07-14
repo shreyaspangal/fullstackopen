@@ -1,0 +1,21 @@
+browser->server: HTTP POST  https://studies.cs.helsinki.fi/exampleapp/new_note
+server-->browser: 302 Redirect to: exampleapp/notes with new data object appended at the end of the array [... , { newObj }]
+
+browser->server: HTTP GET  https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: HTML-code
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: [..., { content: "New content", date: "2022-05-23" }]
+
+note over browser:
+browser sends user input to server
+form submit event handler is executed
+data.json array is appended with new data object
+that renders notes to display
+end note
