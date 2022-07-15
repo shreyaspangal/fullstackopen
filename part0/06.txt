@@ -1,0 +1,9 @@
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: 201 status code && [{ content: "HTML is easy", date: "2019-05-23" }, ...]
+
+
+note over browser:
+browser executes the event handler
+event handler creates a new note and adds to note list
+displays the updated list, then sends the updated data to server 
+end note

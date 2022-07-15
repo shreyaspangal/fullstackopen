@@ -13,9 +13,9 @@ server-->browser: main.js
 browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
 server-->browser: [..., { content: "New content", date: "2022-05-23" }]
 
-note over browser:
-browser sends user input to server
-form submit event handler is executed
-data.json array is appended with new data object
-that renders notes to display
-end note
+** note over browser:
+* browser sends user input to server
+* form submit event handler is executed
+* data.json array is appended with new data object
+* that renders notes to display
+** end note
