@@ -1,40 +1,29 @@
 import { useState } from "react";
-import Statistics from "./Statistics";
-import Button from "./Button";
 
 const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+  const anecdotes = [
+    "If it hurts, do it more often.",
+    "Adding manpower to a late software project makes it later!",
+    "The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
+    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
+    "Premature optimization is the root of all evil.",
+    "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+    "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
+  ];
 
-  const handleClick = () => (item, setItem) => {
-    setItem(item + 1);
-  };
+  const [selected, setSelected] = useState(0);
 
-  const onClick = handleClick();
-
-  const total = good + neutral + bad;
-  const goodValue = good;
-
-  const stats = {
-    good: good,
-    neutral: neutral,
-    bad: bad,
-    total: total,
-    average: (total / 3).toFixed(1),
-    positivesPercentage: ((goodValue / 100) * total).toFixed(1) + " %",
+  const handleClick = () => {
+    const index = Math.floor(Math.random() * 7);
+    setSelected(index);
+    console.log(selected);
   };
 
   return (
-    <div>
-      <h2>Give feedback</h2>
-      <Button onClick={() => onClick(good, setGood)} text="good" />
-      <Button onClick={() => onClick(neutral, setNeutral)} text="neutral" />
-      <Button onClick={() => onClick(bad, setBad)} text="bad" />
-      <h2>Statistics</h2>
-      <Statistics stats={stats} />
-    </div>
+    <>
+      <div>{anecdotes[selected]}</div>
+      <button onClick={handleClick}>Next anecdote</button>
+    </>
   );
 };
 
