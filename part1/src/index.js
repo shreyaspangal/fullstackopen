@@ -7,4 +7,4 @@ import UnicafeApp from './unicafe/App'
 
 // ReactDOM.createRoot(document.getElementById('root')).render(<AnecdotesApp />);
 // ReactDOM.createRoot(document.getElementById('root')).render(<CourseinfoApp />);
-ReactDOM.createRoot(document.getElementById('root')).render(<UnicafeApp />);
+// ReactDOM.createRoot(document.getElementById('root')).render(<UnicafeApp />);
