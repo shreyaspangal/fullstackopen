@@ -1,13 +1,21 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 const App = () => {
     const [persons, setPersons] = useState([
         { name: 'Arto Hellas' }
     ])
-    const [newName, setNewName] = useState('')
+    const [newName, setNewName] = useState('');
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        // Check for duplicate contacts
+        const handleDuplicateContact = persons.find(person => person.name === newName);
+        if (handleDuplicateContact) {
+            alert(`${newName} is already added to phonebook`);
+            return;
+        }
+        // If not found update the contacts list
         setPersons(persons.concat({ name: newName }));
         setNewName('');
     }
