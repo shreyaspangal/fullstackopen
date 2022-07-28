@@ -16,7 +16,7 @@ const App = () => {
 
     //Common variable for holding person data to display
     const contacsToShow = !filter ? persons : persons.filter(person => {
-        return Object.values(person).join('').toLowerCase().includes(filter.toLowerCase());
+        return Object.values(person.name).join('').toLowerCase().includes(filter.toLowerCase());
     });
 
     // Helper function for handling common onchange events
