@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import Filter from '../components/Filter';
+import PersonForm from '../components/PersonForm';
+import Persons from '../components/Persons';
 
 const App = () => {
     const [persons, setPersons] = useState([
@@ -17,11 +20,11 @@ const App = () => {
     });
 
     // Helper function for handling common onchange events
-    const handleOnChange = () => (event, setFunc) => {
-        setFunc(event.target.value)
-    }
+    // const handleOnChange = () => (event, setFunc) => {
+    //     setFunc(event.target.value)
+    // }
     // Custom onChange handler
-    const onChange = handleOnChange();
+    // const onChange = handleOnChange();
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -37,26 +40,16 @@ const App = () => {
         setNewNumber('');
     }
 
+    const PersonFormData = { newName, setNewName, newNumber, setNewNumber, handleSubmit };
+
     return (
         <div>
             <h2>Phonebook</h2>
-            <div>
-                Filter: <input type="text" value={filter} onChange={(e) => onChange(e, setFilter)} />
-            </div>
-            <form onSubmit={handleSubmit}>
-                <h3>Add new contact</h3>
-                <div>
-                    name: <input type="text" value={newName} onChange={(e) => onChange(e, setNewName)} />
-                </div>
-                <div>
-                    number: <input type="number" value={newNumber} onChange={(e) => onChange(e, setNewNumber)} />
-                </div>
-                <div>
-                    <button type="submit">add</button>
-                </div>
-            </form>
+            <Filter filter={filter} setFilter={setFilter} />
+            <h3>Add new contact</h3>
+            <PersonForm PersonFormData={PersonFormData} />
             <h2>Numbers</h2>
-            {!contacsToShow.length ? 'No match found! - try again with another name.' : contacsToShow.map((person) => <div key={person.id}>{person.name}{" "}{person.number}</div>)}
+            <Persons contacsToShow={contacsToShow}/>
         </div>
     )
 }
