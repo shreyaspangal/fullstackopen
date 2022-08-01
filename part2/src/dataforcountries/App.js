@@ -6,11 +6,11 @@ const App = () => {
   let [countries, setCountries] = useState([]);
   let [filter, setFilter] = useState("");
   let [showBtn, setShowBtn] = useState(false);
-  let [countryId, setCountryId] = useState(null);
-  let [weather, setWeather] = useState([]);
+  // let [countryId, setCountryId] = useState(null);
+  // let [weather, setWeather] = useState([]);
 
   const URL = "https://restcountries.com/v3.1/all";
-  const api_key = process.env.REACT_APP_API_KEY;
+  // const api_key = process.env.REACT_APP_API_KEY;
   // const getWeather = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lng}&appid=${api_key}`;
 
   // Load country data from json server into countries
@@ -38,15 +38,11 @@ const App = () => {
       .includes(filter.toLowerCase());
   });
 
-  const getLanguages = () => {
-    if (filteredCountries.length >= 1) {
-      return filteredCountries.map((country) => Object.values(country.languages))
-    }
-    return [['Not available']];
-  }
-
   // Helper function
   const countryDetails = (country) => {
+    // Returns array with languages values as string
+    const getLanguages = Object.values(country.languages) || ['Not available'];
+
     return (
       <div key={country.cca2}>
         <h2>{country.name.official}</h2>
@@ -56,10 +52,8 @@ const App = () => {
           <strong>Languages:</strong>
         </p>
         <ul>
-          {getLanguages().map((items) => {
-            return items.map((item) => {
-              return <li key={item}>{item}</li>;
-            });
+          {getLanguages.map((item) => {
+            return <li key={item}>{item}</li>;
           })}
         </ul>
         <img src={country.coatOfArms.png} alt="flag" width="50" />
