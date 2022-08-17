@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Filter from '../components/Filter';
 import PersonForm from '../components/PersonForm';
 import Persons from '../components/Persons';
@@ -11,11 +10,9 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState("");
 
-    const baseURL = "http://localhost:3001/persons";
-
     useEffect(() => {
         contactService
-            .getAll()
+            .getAllContacts()
             .then(data => setPersons(data));;
     }, []);
 
@@ -45,7 +42,7 @@ const App = () => {
             number: newNumber,
             id: persons.length + 1
         }
-        contactService.create(newContact)
+        contactService.createContact(newContact)
             .then(newData => {
                 setPersons(persons.concat(newData))
                 setNewName('');
@@ -54,6 +51,19 @@ const App = () => {
             .catch(error => {
                 return error.toString();
             });
+    }
+
+    const handleDelete = (object) => {
+        const confirmDelete = window.confirm(`Delete ${object.name}?`)
+
+        if (confirmDelete) {
+            contactService
+                .deleteContact(object.id)
+                .then(data => {
+                    setPersons(persons.filter(person => person.id != object.id))
+                })
+        }
+        return;
     }
 
     const PersonFormData = { newName, setNewName, newNumber, setNewNumber, handleSubmit };
@@ -65,7 +75,7 @@ const App = () => {
             <h3>Add new contact</h3>
             <PersonForm PersonFormData={PersonFormData} />
             <h2>Numbers</h2>
-            <Persons contacsToShow={contacsToShow} />
+            <Persons contacsToShow={contacsToShow} handleDelete={handleDelete} />
         </div>
     )
 }
