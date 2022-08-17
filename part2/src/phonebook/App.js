@@ -37,7 +37,12 @@ const App = () => {
             return;
         }
         // If new contact, then update the contacts list
-        setPersons(persons.concat({ name: newName, number: newNumber, id: persons.length + 1 }));
+        const newContact = {
+            name: newName,
+            number: newNumber,
+            id: persons.length + 1
+        }
+        setPersons(persons.concat(newContact));
         setNewName('');
         setNewNumber('');
     }
