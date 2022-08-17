@@ -3,6 +3,7 @@ import axios from 'axios';
 import Filter from '../components/Filter';
 import PersonForm from '../components/PersonForm';
 import Persons from '../components/Persons';
+import contactService from './services/contacts';
 
 const App = () => {
     let [persons, setPersons] = useState([]);
@@ -13,9 +14,9 @@ const App = () => {
     const baseURL = "http://localhost:3001/persons";
 
     useEffect(() => {
-        axios
-            .get(baseURL)
-            .then(res => setPersons(res.data));;
+        contactService
+            .getAll()
+            .then(data => setPersons(data));;
     }, []);
 
     //Common variable for holding person data to display
@@ -44,9 +45,9 @@ const App = () => {
             number: newNumber,
             id: persons.length + 1
         }
-        axios.post(baseURL, newContact)
-            .then(() => {
-                setPersons(persons.concat(newContact))
+        contactService.create(newContact)
+            .then(newData => {
+                setPersons(persons.concat(newData))
                 setNewName('');
                 setNewNumber('');
             })
