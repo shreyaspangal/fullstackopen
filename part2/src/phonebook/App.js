@@ -31,16 +31,23 @@ const App = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         // Check for duplicate contacts
-        const handleDuplicateContact = persons.find(person => person.name === newName);
-        if (handleDuplicateContact) {
-            alert(`${newName} is already added to phonebook`);
+        const duplicateContact = persons.find(person => person.name === newName);
+        if (duplicateContact) {
+            const confirmReplace = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+
+            const changedContact = { ...duplicateContact, number: newNumber };
+
+            if (confirmReplace) {
+                contactService
+                    .replaceContact(duplicateContact.id, changedContact)
+                    .then(data => setPersons(persons.map(person => person.id != duplicateContact.id ? person : data)))
+            }
             return;
         }
         // If new contact, then update the contacts list
         const newContact = {
             name: newName,
             number: newNumber,
-            id: persons.length + 1
         }
         contactService.createContact(newContact)
             .then(newData => {
@@ -49,7 +56,8 @@ const App = () => {
                 setNewNumber('');
             })
             .catch(error => {
-                return error.toString();
+                console.warn(error.response.data);
+                alert(`Error: ${error.message}`)
             });
     }
 
@@ -64,6 +72,10 @@ const App = () => {
                 })
         }
         return;
+    }
+
+    const handleReplace = () => {
+
     }
 
     const PersonFormData = { newName, setNewName, newNumber, setNewNumber, handleSubmit };
