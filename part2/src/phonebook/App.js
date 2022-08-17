@@ -10,9 +10,11 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState("");
 
+    const baseURL = "http://localhost:3001/persons";
+
     useEffect(() => {
         axios
-            .get("http://localhost:3001/persons")
+            .get(baseURL)
             .then(res => setPersons(res.data));;
     }, []);
 
@@ -42,9 +44,15 @@ const App = () => {
             number: newNumber,
             id: persons.length + 1
         }
-        setPersons(persons.concat(newContact));
-        setNewName('');
-        setNewNumber('');
+        axios.post(baseURL, newContact)
+            .then(() => {
+                setPersons(persons.concat(newContact))
+                setNewName('');
+                setNewNumber('');
+            })
+            .catch(error => {
+                return error.toString();
+            });
     }
 
     const PersonFormData = { newName, setNewName, newNumber, setNewNumber, handleSubmit };

@@ -7,8 +7,8 @@ import DataForCountriesApp from './dataforcountries/App';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    {/* <PhonebookApp /> */}
+    <PhonebookApp />
     {/* <CourseinfoApp /> */}
-    <DataForCountriesApp />
+    {/* <DataForCountriesApp /> */}
   </React.StrictMode>
 );
