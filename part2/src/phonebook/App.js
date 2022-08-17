@@ -3,12 +3,47 @@ import Filter from '../components/Filter';
 import PersonForm from '../components/PersonForm';
 import Persons from '../components/Persons';
 import contactService from './services/contacts';
+import "../index.css";
+
+const Notification = ({ notification: { type, message } }) => {
+    if (message === null) {
+        return null
+    }
+
+    if (type === 'error') {
+        return (
+            <div className='error'>
+                {message}
+            </div>
+        )
+    }
+
+    if (type === 'success') {
+        return (
+            <div className='success'>
+                {message}
+            </div>
+        )
+    }
+}
+
+const initialNotification = {
+    type: null,
+    message: null
+};
 
 const App = () => {
     let [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState("");
+    const [notification, setNotification] = useState(initialNotification);
+
+    const resetNotification = () => {
+        return setTimeout(() => {
+            setNotification(initialNotification);
+        }, 5000);
+    }
 
     useEffect(() => {
         contactService
@@ -40,7 +75,17 @@ const App = () => {
             if (confirmReplace) {
                 contactService
                     .replaceContact(duplicateContact.id, changedContact)
-                    .then(data => setPersons(persons.map(person => person.id != duplicateContact.id ? person : data)))
+                    .then(data => {
+                        setPersons(persons.map(person => person.id != duplicateContact.id ? person : data))
+                        // Notification view
+                        setNotification({ type: 'success', message: `Replaced ${data.name} with ${data.number}!` });
+                        resetNotification();
+                    })
+                    .catch(error => {
+                        // Notification view - when deleted contact is updated
+                        setNotification({ type: 'error', message: `Contact of ${changedContact.name} has already been removed from the server!` });
+                        resetNotification();
+                    });
             }
             return;
         }
@@ -54,6 +99,9 @@ const App = () => {
                 setPersons(persons.concat(newData))
                 setNewName('');
                 setNewNumber('');
+                // Notification view
+                setNotification({ type: 'success', message: `Added ${newData.name}` });
+                resetNotification();
             })
             .catch(error => {
                 console.warn(error.response.data);
@@ -69,13 +117,16 @@ const App = () => {
                 .deleteContact(object.id)
                 .then(data => {
                     setPersons(persons.filter(person => person.id != object.id))
+                    // Notification view
+                    setNotification({ type: 'error', message: `Deleted ${object.name} successfully!` });
+                    resetNotification();
                 })
+                .catch(error => {
+                    console.warn(error.response.data);
+                    alert(`Error: ${error.message}`)
+                });
         }
         return;
-    }
-
-    const handleReplace = () => {
-
     }
 
     const PersonFormData = { newName, setNewName, newNumber, setNewNumber, handleSubmit };
@@ -83,10 +134,11 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification notification={notification} />
             <Filter filter={filter} setFilter={setFilter} />
             <h3>Add new contact</h3>
             <PersonForm PersonFormData={PersonFormData} />
-            <h2>Numbers</h2>
+            <h3>Numbers</h3>
             <Persons contacsToShow={contacsToShow} handleDelete={handleDelete} />
         </div>
     )

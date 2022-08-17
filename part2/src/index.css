@@ -1,0 +1,23 @@
+h2 {
+    color: green;
+}
+
+.success {
+    font-size: 35px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-weight: bold;
+    border: 2px solid turquoise;
+    border-radius: 1rem;
+    color: rgb(81, 188, 177);
+}
+
+.error {
+    font-size: 35px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-weight: bold;
+    border: 2px solid rgb(224, 64, 64);
+    border-radius: 1rem;
+    color: rgb(188, 81, 81);
+}
