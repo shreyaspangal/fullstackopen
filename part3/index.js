@@ -26,6 +26,10 @@ let persons = [
     }
 ];
 
+const generateId = () => {
+    return Math.floor(Math.random() * 10000000 + 1);
+}
+
 app.get('/api/persons', (req, res) => {
     res.json(persons).status(200);
 })
@@ -42,6 +46,28 @@ app.get('/api/persons/:id', (req, res) => {
             error: 'person not found!'
         })
     }
+})
+
+app.post('/api/persons', (req, res) => {
+    const { name, number } = req.body;
+
+    const person = { "id": generateId(), name, number };
+
+    if (!number) {
+        return res.status(400).json({
+            error: 'Provide a number'
+        })
+    }
+
+    if (!name) {
+        return res.status(400).json({
+            error: 'Provide a name'
+        })
+    }
+
+    const newPersons = persons.concat(person);
+
+    res.json(newPersons).send(200);
 })
 
 app.delete('/api/persons/:id', (req, res) => {
