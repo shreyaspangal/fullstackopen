@@ -51,7 +51,13 @@ app.get('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
     const { name, number } = req.body;
 
-    const person = { "id": generateId(), name, number };
+    const duplicateName = persons.find(person => person.name === name);
+
+    if (duplicateName) {
+        return res.status(400).json({
+            error: 'Name must be unique'
+        })
+    }
 
     if (!number) {
         return res.status(400).json({
@@ -64,6 +70,8 @@ app.post('/api/persons', (req, res) => {
             error: 'Provide a name'
         })
     }
+
+    const person = { "id": generateId(), name, number };
 
     const newPersons = persons.concat(person);
 
