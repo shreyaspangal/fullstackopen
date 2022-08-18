@@ -30,6 +30,20 @@ app.get('/api/persons', (req, res) => {
     res.json(persons).status(200);
 })
 
+app.get('/api/persons/:id', (req, res) => {
+    let { id } = req.params;
+
+    const person = persons.find(person => person.id === Number(id));
+    console.log('person', person)
+    if (person) {
+        return res.json(person).status(200);
+    } else {
+        return res.status(404).json({
+            error: 'person not found!'
+        })
+    }
+})
+
 app.get('/info', (req, res) => {
     const message = `Phonebook has info for ${persons.length} people <br /> <br /> ${new Date()}`;
     res.send(message).status(200);
