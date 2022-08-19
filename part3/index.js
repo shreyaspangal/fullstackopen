@@ -3,7 +3,10 @@ const app = express();
 const morgan = require('morgan');
 
 app.use(express.json());
-app.use(morgan(':method :url :date'));
+morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+app.use(morgan(':method :url :status :body'));
+
+
 
 let persons = [
     {
@@ -42,7 +45,7 @@ app.get('/api/persons/:id', (req, res) => {
     const person = persons.find(person => person.id === Number(id));
     console.log('person', person)
     if (person) {
-        return res.json(person).status(200);
+        return res.status(200).json(person);
     } else {
         return res.status(404).json({
             error: 'person not found!'
@@ -77,7 +80,7 @@ app.post('/api/persons', (req, res) => {
 
     const newPersons = persons.concat(person);
 
-    res.json(newPersons).send(200);
+    res.status(200).json(newPersons);
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -90,7 +93,7 @@ app.delete('/api/persons/:id', (req, res) => {
 
 app.get('/info', (req, res) => {
     const message = `Phonebook has info for ${persons.length} people <br /> <br /> ${new Date()}`;
-    res.send(message).status(200);
+    res.status(200).send(message);
 })
 
 const PORT = 3001;
