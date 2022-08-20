@@ -36,10 +36,6 @@ const generateId = () => {
     return Math.floor(Math.random() * 10000000 + 1);
 }
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>');
-})
-
 app.get('/api/persons', (req, res) => {
     res.json(persons).status(200);
 })
