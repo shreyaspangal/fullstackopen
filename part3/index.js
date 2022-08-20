@@ -80,7 +80,7 @@ app.post('/api/persons', (req, res) => {
 
     const newPersons = persons.concat(person);
 
-    res.status(200).json(newPersons);
+    res.status(201).json(newPersons);
 })
 
 app.delete('/api/persons/:id', (req, res) => {

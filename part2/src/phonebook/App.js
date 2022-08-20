@@ -96,7 +96,7 @@ const App = () => {
         }
         contactService.createContact(newContact)
             .then(newData => {
-                setPersons(persons.concat(newData))
+                setPersons(newData)
                 setNewName('');
                 setNewNumber('');
                 // Notification view
