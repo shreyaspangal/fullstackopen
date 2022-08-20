@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseURL = 'https://pure-mesa-13031.herokuapp.com/api/persons';
+const baseURL = '/api/persons';
 
 const getAllContacts = () => {
     return axios
