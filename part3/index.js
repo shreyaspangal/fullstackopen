@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const cors = require('cors');
 
 app.use(express.static('build'));
 app.use(cors());
 app.use(express.json());
-morgan.token('body', function (req, res) { return JSON.stringify(req.body) });
-app.use(morgan(':method :url :status :body'));
+// morgan.token('body', function (req, res) { return JSON.stringify(req.body) });
+// app.use(morgan(':method :url :status :body'));
 
 let persons = [
     {
@@ -35,6 +35,10 @@ let persons = [
 const generateId = () => {
     return Math.floor(Math.random() * 10000000 + 1);
 }
+
+app.get('/', (req, res) => {
+    res.send('<h1>Hello World!</h1>');
+})
 
 app.get('/api/persons', (req, res) => {
     res.json(persons).status(200);
