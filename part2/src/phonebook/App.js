@@ -33,7 +33,7 @@ const initialNotification = {
 };
 
 const App = () => {
-    let [persons, setPersons] = useState([]);
+    const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState('');
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState("");
@@ -48,7 +48,7 @@ const App = () => {
     useEffect(() => {
         contactService
             .getAllContacts()
-            .then(data => setPersons(data));;
+            .then(data => setPersons(data));
     }, []);
 
     //Common variable for holding person data to display
@@ -76,7 +76,7 @@ const App = () => {
                 contactService
                     .replaceContact(duplicateContact.id, changedContact)
                     .then(data => {
-                        setPersons(persons.map(person => person.id != duplicateContact.id ? person : data))
+                        setPersons(persons.map(person => person.id !== duplicateContact.id ? person : data))
                         // Notification view
                         setNotification({ type: 'success', message: `Replaced ${data.name} with ${data.number}!` });
                         resetNotification();
@@ -100,7 +100,7 @@ const App = () => {
                 setNewName('');
                 setNewNumber('');
                 // Notification view
-                setNotification({ type: 'success', message: `Added ${newData.name}` });
+                setNotification({ type: 'success', message: `Added ${newName}` });
                 resetNotification();
             })
             .catch(error => {
@@ -116,7 +116,7 @@ const App = () => {
             contactService
                 .deleteContact(object.id)
                 .then(data => {
-                    setPersons(persons.filter(person => person.id != object.id))
+                    setPersons(persons.filter(person => person.id !== object.id))
                     // Notification view
                     setNotification({ type: 'error', message: `Deleted ${object.name} successfully!` });
                     resetNotification();
