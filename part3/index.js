@@ -1,7 +1,14 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const cors = require('cors');
+// const Note = require('./models/note');
+const Contact = require('./models/contact');
+const mongoose = require('mongoose');
+
+const url = process.env.MONGODB_URI;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.static('build'));
 app.use(cors());
@@ -36,33 +43,36 @@ const generateId = () => {
     return Math.floor(Math.random() * 10000000 + 1);
 }
 
-app.get('/api/persons', (req, res) => {
-    res.json(persons).status(200);
+app.get('/api/contacts', (req, res) => {
+
+    Contact.find({}).then(notes => {
+        res.json(notes).status(200);
+    });
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/contacts/:id', (req, res) => {
     let { id } = req.params;
 
-    const person = persons.find(person => person.id === Number(id));
-    if (person) {
-        return res.status(200).json(person);
-    } else {
-        return res.status(404).json({
-            error: 'person not found!'
+    Contact.findById(id)
+        .then(contact => {
+            if (contact) {
+                return res.status(200).json(contact)
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            return res.status(404).json({ error: `No contact found at id: ${id}!` });
         });
-    }
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/contacts', async (req, res) => {
     const { name, number } = req.body;
 
-    const duplicateName = persons.find(person => person.name === name);
-
-    if (duplicateName) {
-        return res.status(400).json({
-            error: 'Name must be unique'
-        })
-    }
+    // if (duplicateName) {
+    //     return res.status(400).json({
+    //         error: 'Name must be unique'
+    //     })
+    // }
 
     if (!number) {
         return res.status(400).json({
@@ -76,14 +86,18 @@ app.post('/api/persons', (req, res) => {
         })
     }
 
-    const person = { "id": generateId(), name, number };
+    const newContact = new Contact({ name, number });
+    const updatedContactList = await newContact.save();
+    const latestContactList = await Contact.find({});
+    try {
+        res.status(201).json(latestContactList);
+    } catch (error) {
+        res.status(500).json(error);
+    }
 
-    const newPersons = persons.concat(person);
-
-    res.status(201).json(newPersons);
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/contacts/:id', (req, res) => {
     let { id } = req.params;
 
     const filteredPersons = persons.filter(person => person.id !== Number(id));
@@ -91,13 +105,19 @@ app.delete('/api/persons/:id', (req, res) => {
     res.sendStatus(204);
 })
 
-app.get('/info', (req, res) => {
-    const message = `Phonebook has info for ${persons.length} people <br /> <br /> ${new Date()}`;
+app.get('/api/contacts/info', (req, res) => {
+    const message = `Phonebook has info for ${contacts.length} people <br /> <br /> ${new Date()}`;
     res.status(200).send(message);
 })
 
-const PORT = process.env.PORT || 3001;
-
-app.listen(PORT, () => {
-    console.log('Server is running on port 3001');
-})
+// Connect to Mongodb & Server
+mongoose.connect(url)
+    .then(result => {
+        console.log('connected to MongoDB')
+        app.listen(PORT, () => {
+            console.log('Server is running on port 3001');
+        })
+    })
+    .catch((error) => {
+        console.log('error connecting to MongoDB:', error.message)
+    });

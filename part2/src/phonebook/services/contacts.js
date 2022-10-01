@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseURL = '/api/persons';
+const baseURL = '/api/contacts';
 
 const getAllContacts = () => {
     return axios

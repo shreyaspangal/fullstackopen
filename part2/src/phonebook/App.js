@@ -65,30 +65,32 @@ const App = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
         // Check for duplicate contacts
-        const duplicateContact = persons.find(person => person.name === newName);
-        if (duplicateContact) {
-            const confirmReplace = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+        // const duplicateContact = persons.find(person => person.name === newName);
+        // if (duplicateContact) {
+        //     const confirmReplace = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
 
-            const changedContact = { ...duplicateContact, number: newNumber };
+        //     const changedContact = { ...duplicateContact, number: newNumber };
 
-            if (confirmReplace) {
-                contactService
-                    .replaceContact(duplicateContact.id, changedContact)
-                    .then(data => {
-                        setPersons(persons.map(person => person.id !== duplicateContact.id ? person : data))
-                        // Notification view
-                        setNotification({ type: 'success', message: `Replaced ${data.name} with ${data.number}!` });
-                        resetNotification();
-                    })
-                    .catch(error => {
-                        // Notification view - when deleted contact is updated
-                        setNotification({ type: 'error', message: `Contact of ${changedContact.name} has already been removed from the server!` });
-                        resetNotification();
-                    });
-            }
-            return;
-        }
+        //     if (confirmReplace) {
+        //         contactService
+        //             .replaceContact(duplicateContact.id, changedContact)
+        //             .then(data => {
+        //                 setPersons(persons.map(person => person.id !== duplicateContact.id ? person : data))
+        //                 // Notification view
+        //                 setNotification({ type: 'success', message: `Replaced ${data.name} with ${data.number}!` });
+        //                 resetNotification();
+        //             })
+        //             .catch(error => {
+        //                 // Notification view - when deleted contact is updated
+        //                 setNotification({ type: 'error', message: `Contact of ${changedContact.name} has already been removed from the server!` });
+        //                 resetNotification();
+        //             });
+        //     }
+        //     return;
+        // }
+
         // If new contact, then update the contacts list
         const newContact = {
             name: newName,
@@ -139,7 +141,7 @@ const App = () => {
             <h3>Add new contact</h3>
             <PersonForm PersonFormData={PersonFormData} />
             <h3>Numbers</h3>
-            <Persons contacsToShow={contacsToShow} handleDelete={handleDelete} />
+            <Persons contacsToShow={contacsToShow} handleDelete={handleDelete} filter={filter} />
         </div>
     )
 }
