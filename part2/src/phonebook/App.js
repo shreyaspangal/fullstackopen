@@ -63,33 +63,43 @@ const App = () => {
     // Custom onChange handler
     // const onChange = handleOnChange();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         // Check for duplicate contacts
-        // const duplicateContact = persons.find(person => person.name === newName);
-        // if (duplicateContact) {
-        //     const confirmReplace = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
+        const getAllContacts = await contactService.getAllContacts();
+        const duplicateContact = getAllContacts.find(contact => contact.name === newName);  // @Returns - Object || undefined;
 
-        //     const changedContact = { ...duplicateContact, number: newNumber };
+        if (duplicateContact) {
+            const confirmReplace = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
 
-        //     if (confirmReplace) {
-        //         contactService
-        //             .replaceContact(duplicateContact.id, changedContact)
-        //             .then(data => {
-        //                 setPersons(persons.map(person => person.id !== duplicateContact.id ? person : data))
-        //                 // Notification view
-        //                 setNotification({ type: 'success', message: `Replaced ${data.name} with ${data.number}!` });
-        //                 resetNotification();
-        //             })
-        //             .catch(error => {
-        //                 // Notification view - when deleted contact is updated
-        //                 setNotification({ type: 'error', message: `Contact of ${changedContact.name} has already been removed from the server!` });
-        //                 resetNotification();
-        //             });
-        //     }
-        //     return;
-        // }
+            const updatedNumber = { number: newNumber };
+
+            if (confirmReplace) {
+                contactService
+                    .replaceContact(duplicateContact.id, updatedNumber)
+                    .then(data => {
+
+                        if (data === null) {
+                            // Notification view - when deleted contact is updated
+                            setNotification({ type: 'error', message: `Contact of ${duplicateContact.name} has already been removed from the server!` });
+                            resetNotification();
+                        }
+
+                        setPersons(persons.map(person => person.id !== duplicateContact.id ? person : data))
+                        // Notification view
+                        setNotification({ type: 'success', message: `Replaced ${data.name} with ${data.number}!` });
+                        resetNotification();
+                    })
+                    .catch(error => {
+                        console.warn(error.response);
+                        // Notification view - when deleted contact is updated
+                        setNotification({ type: 'error', message: error.response.data.message });
+                        resetNotification();
+                    });
+            }
+            return;
+        }
 
         // If new contact, then update the contacts list
         const newContact = {
@@ -106,8 +116,9 @@ const App = () => {
                 resetNotification();
             })
             .catch(error => {
-                console.warn(error.response.data);
-                alert(`Error: ${error.message}`)
+                console.warn(error.response);
+                setNotification({ type: 'error', message: error.response.data.message });
+                resetNotification();
             });
     }
 
@@ -124,8 +135,9 @@ const App = () => {
                     resetNotification();
                 })
                 .catch(error => {
-                    console.warn(error.response.data);
-                    alert(`Error: ${error.message}`)
+                    console.warn(error.response);
+                    setNotification({ type: 'error', message: error.response.data.message });
+                    resetNotification();
                 });
         }
         return;
