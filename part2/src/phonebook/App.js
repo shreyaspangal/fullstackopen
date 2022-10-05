@@ -87,6 +87,8 @@ const App = () => {
                         }
 
                         setPersons(persons.map(person => person.id !== duplicateContact.id ? person : data))
+                        setNewName('');
+                        setNewNumber('');
                         // Notification view
                         setNotification({ type: 'success', message: `Replaced ${data.name} with ${data.number}!` });
                         resetNotification();
@@ -109,7 +111,6 @@ const App = () => {
         contactService.createContact(newContact)
             .then(newData => {
                 setPersons(persons.concat(newData));
-                console.log(persons);
                 setNewName('');
                 setNewNumber('');
                 // Notification view
