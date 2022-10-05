@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/blogs/
+Content-Type: application/json
+
+{
+    "title": "How to start your web development journey in 2022!",
+    "author": "Shreyas P",
+    "url": "https://shreyaspangal.com",
+    "likes": 30
+}
