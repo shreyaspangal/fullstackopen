@@ -12,17 +12,17 @@ const Notification = ({ notification: { type, message } }) => {
 
     if (type === 'error') {
         return (
-            <div className='error'>
+            <p className='error text-4xl'>
                 {message}
-            </div>
+            </p>
         )
     }
 
     if (type === 'success') {
         return (
-            <div className='success'>
+            <p className='success text-4xl'>
                 {message}
-            </div>
+            </p>
         )
     }
 }
@@ -94,7 +94,7 @@ const App = () => {
                     .catch(error => {
                         console.warn(error.response);
                         // Notification view - when deleted contact is updated
-                        setNotification({ type: 'error', message: error.response.data.message });
+                        setNotification({ type: 'error', message: error.response.data.error });
                         resetNotification();
                     });
             }
@@ -108,7 +108,8 @@ const App = () => {
         }
         contactService.createContact(newContact)
             .then(newData => {
-                setPersons(newData)
+                setPersons(persons.concat(newData));
+                console.log(persons);
                 setNewName('');
                 setNewNumber('');
                 // Notification view
@@ -117,7 +118,7 @@ const App = () => {
             })
             .catch(error => {
                 console.warn(error.response);
-                setNotification({ type: 'error', message: error.response.data.message });
+                setNotification({ type: 'error', message: error.response.data.error });
                 resetNotification();
             });
     }
@@ -136,7 +137,7 @@ const App = () => {
                 })
                 .catch(error => {
                     console.warn(error.response);
-                    setNotification({ type: 'error', message: error.response.data.message });
+                    setNotification({ type: 'error', message: error.response.data.error });
                     resetNotification();
                 });
         }
@@ -146,13 +147,13 @@ const App = () => {
     const PersonFormData = { newName, setNewName, newNumber, setNewNumber, handleSubmit };
 
     return (
-        <div>
-            <h2>Phonebook</h2>
+        <div className='container mx-auto px-5 my-5 max-w-md'>
+            <h2 className='my-5 font-bold text-3xl text-center'>Phonebook</h2>
             <Notification notification={notification} />
             <Filter filter={filter} setFilter={setFilter} />
-            <h3>Add new contact</h3>
+            <h3 className='mt-3 mb-1 font-semibold'>Add new contact</h3>
             <PersonForm PersonFormData={PersonFormData} />
-            <h3>Numbers</h3>
+            <h3 className='mt-3 mb-1 font-semibold'>Numbers</h3>
             <Persons contacsToShow={contacsToShow} handleDelete={handleDelete} filter={filter} />
         </div>
     )

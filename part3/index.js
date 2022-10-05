@@ -16,6 +16,7 @@ app.use(express.json());
 morgan.token('body', function (req, res) { return JSON.stringify(req.body) });
 app.use(morgan(':method :url :status :body'));
 
+// Data for testing begins here <--->
 let persons = [
     {
         "id": 1,
@@ -42,37 +43,36 @@ let persons = [
 const generateId = () => {
     return Math.floor(Math.random() * 10000000 + 1);
 }
+// Data for testing ends here <--->
 
 app.get('/api/contacts', (req, res) => {
 
-    Contact.find({}).then(notes => {
-        res.json(notes).status(200);
-    });
+    Contact.find({})
+        .then(notes => {
+            res.json(notes).status(200);
+        })
+        .catch(error => next(error));
 })
 
-app.post('/api/contacts', async (req, res, next) => {
+app.post('/api/contacts', (req, res, next) => {
     const { name, number } = req.body;
 
-    if (!number) {
-        return res.status(400).json({
-            message: 'Provide a number'
-        })
-    }
+    // if (!number) {
+    //     return res.status(400).json({
+    //         message: 'Provide a number'
+    //     })
+    // }
 
-    if (!name) {
-        return res.status(400).json({
-            message: 'Provide a name'
-        })
-    }
+    // if (!name) {
+    //     return res.status(400).json({
+    //         message: 'Provide a name'
+    //     })
+    // }
 
     const newContact = new Contact({ name, number });
-    const updatedContactList = await newContact.save();
-    const latestContactList = await Contact.find({});
-    try {
-        res.status(201).json(latestContactList);
-    } catch (error) {
-        res.status(500).json(error);
-    }
+    newContact.save()
+        .then(result => res.status(201).json(result))
+        .catch(error => next(error));
 
 })
 
@@ -102,12 +102,12 @@ app.delete('/api/contacts/:id', (req, res, next) => {
     let { id } = req.params;
 
     Contact.findByIdAndRemove(id)
-        // Handle if user tries to delete non-existing resource from database
         .then(result => {
             if (result) {
                 return res.status(204).end()
             }
-            return res.status(404).json({ message: "Contact not found!" });
+            // If user tries to delete non-existing resource from database
+            return res.status(404).json({ error: "Contact not found!" });
         })
         .catch(error => next(error));
 })
@@ -118,7 +118,7 @@ app.put('/api/contacts/:id', (req, res, next) => {
 
     const updatedNumber = { number };
 
-    Contact.findByIdAndUpdate(id, updatedNumber, { new: true })
+    Contact.findByIdAndUpdate(id, updatedNumber, { new: true, runValidators: true, context: 'query' })
         .then(updatedContact => res.json(updatedContact))
         .catch(error => next(error));
 })
@@ -133,6 +133,10 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
+    }
+
+    if (error.name === 'ValidationError') {
+        return response.status(400).send({ error: error.message })
     }
 
     next(error);
